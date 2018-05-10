@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "283064599598",
+    "firebase_url": "https://kidy-teacher.firebaseio.com",
+    "project_id": "kidy-teacher",
+    "storage_bucket": "kidy-teacher.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:283064599598:android:4323d8762cedc1c7",
+        "android_client_info": {
+          "package_name": "vn.com.kidy.teacher"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "283064599598-nfg2bkk8ug189btb29u9uut4pms5kqjc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB75ChPtTVXXtfPzkhEiJq4TY0z3Qla23U"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
