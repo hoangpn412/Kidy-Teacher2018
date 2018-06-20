@@ -1,27 +1,58 @@
 {
   "project_info": {
-    "project_number": "283064599598",
-    "firebase_url": "https://kidy-teacher.firebaseio.com",
-    "project_id": "kidy-teacher",
-    "storage_bucket": "kidy-teacher.appspot.com"
+    "project_number": "703614532925",
+    "firebase_url": "https://kidy-notification-dev.firebaseio.com",
+    "project_id": "kidy-notification-dev",
+    "storage_bucket": "kidy-notification-dev.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:283064599598:android:4323d8762cedc1c7",
+        "mobilesdk_app_id": "1:703614532925:android:a5d4b36d1fb5a9bf",
+        "android_client_info": {
+          "package_name": "vn.com.kidy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "703614532925-ekcgplspfgo9d7diasbkkqp8f2v7np3e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-zxi7xLObY9ms0_aBN7FPmP-Mi7eJ_Ks"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:703614532925:android:4323d8762cedc1c7",
         "android_client_info": {
           "package_name": "vn.com.kidy.teacher"
         }
       },
       "oauth_client": [
         {
-          "client_id": "283064599598-nfg2bkk8ug189btb29u9uut4pms5kqjc.apps.googleusercontent.com",
+          "client_id": "703614532925-ekcgplspfgo9d7diasbkkqp8f2v7np3e.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyB75ChPtTVXXtfPzkhEiJq4TY0z3Qla23U"
+          "current_key": "AIzaSyD-zxi7xLObY9ms0_aBN7FPmP-Mi7eJ_Ks"
         }
       ],
       "services": {

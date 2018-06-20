@@ -1,6 +1,8 @@
 package vn.com.kidy.teacher.interactor;
 
 import io.reactivex.Observable;
+import vn.com.kidy.teacher.data.model.media.AlbumContent;
+import vn.com.kidy.teacher.data.model.media.AlbumId;
 import vn.com.kidy.teacher.data.model.media.Medias;
 import vn.com.kidy.teacher.network.client.Service;
 
@@ -17,5 +19,9 @@ public class MediasInteractor {
 
     public Observable<Medias> getMedias(String classId, int pageSize, int pageIndex) {
         return service.getMedias(classId, pageSize, pageIndex);
+    }
+
+    public Observable<AlbumId> createAlbum(String schoolId, String classId, AlbumContent albumContent) {
+        return service.createAlbum(schoolId, classId, albumContent);
     }
 }

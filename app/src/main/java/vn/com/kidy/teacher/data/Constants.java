@@ -29,7 +29,7 @@ public class Constants {
     public static final String API_SLL_URL = "http://api-sll.kidysolution.com/";
     public static final String API_NEWS_URL = "http://api-news.kidysolution.com/";
     public static final String APP_PREF = "Kidy";
-
+    public static final String API_UPLOAD_URL = "http://fileupload.kidysolution.com";
     public static final String IMAGE_BASE_URL = "http://image.kidysolution.com";
 
     public static final class EndPoint {
@@ -42,6 +42,8 @@ public class Constants {
         public static final String CLASS_NOTES = "http://api-sll.kidysolution.com/api/school/class/{classId}/message/{year}/{month}/{day}";
         public static final String CREATE_MESSAGE = "api/school/class/{classId}/message/{childrenId}";
         public static final String DAYOFF = "api/parent/dayoff";
+        public static final String CREATE_ALBUM = "api/school/album/{schoolId}/{classId}";
+        public static final String UPLOAD_IMAGE = "/api/fileupload/{token}";
 
         public static final String HOME = "home.txt";
         public static final String CALENDAR = "calendar.txt";

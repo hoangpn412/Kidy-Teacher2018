@@ -1,15 +1,20 @@
 package vn.com.kidy.teacher.view.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,8 +24,30 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.esafirm.imagepicker.features.ImagePicker;
+import com.esafirm.imagepicker.model.Image;
+import com.google.gson.Gson;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import me.jessyan.retrofiturlmanager.RetrofitUrlManager;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import vn.com.kidy.teacher.R;
 import vn.com.kidy.teacher.data.Constants;
 import vn.com.kidy.teacher.data.model.login.ClassInfo;
@@ -65,6 +92,8 @@ public class AlbumFragment extends Fragment implements AlbumPresenter.View {
     TextView txt_note_time;
     @BindView(R.id.btn_back)
     ImageView btn_back;
+    @BindView(R.id.fb_add_images)
+    FloatingActionButton fb_add_images;
 
     private AlbumPresenter albumPresenter;
     private AlbumAdapter adapter;
@@ -147,7 +176,17 @@ public class AlbumFragment extends Fragment implements AlbumPresenter.View {
             }
             ((MainActivity) getActivity()).addViewImageFragment(images, position);
         });
+
+        //
+        fb_add_images.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ImagePicker.create(AlbumFragment.this) // Activity or Fragment
+                        .start();
+            }
+        });
     }
+
 
     private int dpToPx(int dp) {
         Resources r = getResources();
@@ -210,4 +249,61 @@ public class AlbumFragment extends Fragment implements AlbumPresenter.View {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        List<Image> images = ImagePicker.getImages(data);
+        if (images != null && !images.isEmpty()) {
+            Log.e("a", "images: " + images.size() + " " + images.get(0).getPath());
+
+            String filepath = images.get(0).getPath();
+            File imagefile = new File(filepath);
+            FileInputStream fis = null;
+            try {
+                fis = new FileInputStream(imagefile);
+                uploadImage(getBytes(fis));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public byte[] getBytes(InputStream is) throws IOException {
+        ByteArrayOutputStream byteBuff = new ByteArrayOutputStream();
+
+        int buffSize = 1024;
+        byte[] buff = new byte[buffSize];
+
+        int len = 0;
+        while ((len = is.read(buff)) != -1) {
+            byteBuff.write(buff, 0, len);
+        }
+
+        return byteBuff.toByteArray();
+    }
+
+    private void uploadImage(byte[] imageBytes) {
+
+        Log.e("a" , "uploadImage: " + imageBytes.length);
+
+        RequestBody requestFile = RequestBody.create(MediaType.parse("*/*"), imageBytes);
+
+        try {
+            Log.e("a", (requestFile == null) + " " + requestFile.contentLength());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        MultipartBody.Part body = MultipartBody.Part.createFormData("image", "image.png", requestFile);
+
+        MultipartBody.Part fileToUpload = MultipartBody.Part.createFormData("file1", "image1", requestFile);
+        RequestBody filename = RequestBody.create(MediaType.parse("text/plain"), "image1");
+
+
+        RetrofitUrlManager.getInstance().putDomain("douban", Constants.API_UPLOAD_URL);
+        albumPresenter.onUploadFile(((MainActivity) getActivity()).getToken(), body, requestFile);
+    }
+
 }

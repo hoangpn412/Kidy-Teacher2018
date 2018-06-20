@@ -35,11 +35,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.esafirm.imagepicker.features.ImagePicker;
+import com.esafirm.imagepicker.model.Image;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -138,6 +141,7 @@ public class MainActivity extends AppCompatActivity
 
     private boolean isLogout;
     private boolean choosePressed = false;
+    public String token;
 
     private ArrayList<vn.com.kidy.teacher.data.model.login.Kid> commentList = new ArrayList<>();
 
@@ -158,6 +162,19 @@ public class MainActivity extends AppCompatActivity
         selectedDate = CalendarDay.today();
 
         initFCM();
+        readFirebaseMessage();
+    }
+
+    private void readFirebaseMessage() {
+        Log.e("a", "read Firebase Messsage");
+        if (getIntent().getExtras() != null) {
+            String from = getIntent().getExtras().getString("from");
+            String data = getIntent().getExtras().getString("data");
+            Log.d("a", "Key: " + " Value: " + from + " " + data);
+            if (from.contains("news")) {
+
+            }
+        }
     }
 
     private void initFCM() {
@@ -783,4 +800,24 @@ public class MainActivity extends AppCompatActivity
         super.onPause();
     }
 
+    public String getToken() {
+        return this.token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+//    @Override
+//    protected void onActivityResult(int requestCode, final int resultCode, Intent data) {
+//        if (ImagePicker.shouldHandle(requestCode, resultCode, data)) {
+//            // Get a list of picked images
+//            List<Image> images = ImagePicker.getImages(data);
+//            // or get a single image only
+//            Image image = ImagePicker.getFirstImageOrNull(data);
+//
+//            Log.e("a", images.size() + " .,");
+//        }
+//        super.onActivityResult(requestCode, resultCode, data);
+//    }
 }

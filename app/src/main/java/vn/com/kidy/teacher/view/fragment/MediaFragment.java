@@ -1,17 +1,23 @@
 package vn.com.kidy.teacher.view.fragment;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -19,7 +25,10 @@ import vn.com.kidy.teacher.R;
 import vn.com.kidy.teacher.data.Constants;
 import vn.com.kidy.teacher.data.model.login.ClassInfo;
 import vn.com.kidy.teacher.data.model.media.Album;
+import vn.com.kidy.teacher.data.model.media.AlbumContent;
+import vn.com.kidy.teacher.data.model.media.AlbumId;
 import vn.com.kidy.teacher.data.model.media.Medias;
+import vn.com.kidy.teacher.data.model.note.Message;
 import vn.com.kidy.teacher.interactor.MediasInteractor;
 import vn.com.kidy.teacher.network.client.Client;
 import vn.com.kidy.teacher.presenter.MediasPresenter;
@@ -52,6 +61,10 @@ public class MediaFragment extends Fragment implements MediasPresenter.View{
     RecyclerView rv_medias;
     @BindView(R.id.progress_loading)
     ProgressBar progress_loading;
+    @BindView(R.id.fb_create_album)
+    FloatingActionButton fb_create_album;
+
+    private String albumName;
 
     private MediasPresenter mediasPresenter;
     private MediaAdapter adapter;
@@ -122,7 +135,40 @@ public class MediaFragment extends Fragment implements MediasPresenter.View{
                 getDataSuccess(medias);
             }
         }
+
+        fb_create_album.setOnClickListener(view1 -> showDialogCreateAlbum());
     }
+
+    private void showDialogCreateAlbum() {
+        LayoutInflater layoutInflaterAndroid = LayoutInflater.from(getContext());
+        View mView = layoutInflaterAndroid.inflate(R.layout.dialog_create_album, null);
+        AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(getContext());
+        alertDialogBuilderUserInput.setView(mView);
+
+        final EditText userInputDialogEditText = mView.findViewById(R.id.userInputDialog);
+
+        alertDialogBuilderUserInput
+                .setCancelable(false)
+                .setPositiveButton("Tạo album", (dialogBox, id) -> {
+                    // ToDo get user input here
+                    String albumName = userInputDialogEditText.getText().toString();
+                    if (albumName == null || albumName.length() == 0) {
+                        Toast.makeText(getContext(), "Bạn chưa nhập tên album", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    this.albumName = albumName;
+                    AlbumContent albumContent  = new AlbumContent(albumName);
+                    mediasPresenter.onCreateAlbum(cls.getSchoolId(), cls.getId(), albumContent);
+                })
+
+                .setNegativeButton("Huỷ",
+                        (dialogBox, id) -> dialogBox.cancel());
+
+        AlertDialog alertDialogAndroid = alertDialogBuilderUserInput.create();
+        alertDialogAndroid.show();
+    }
+
+
 
     private void onMediaClick(Album album) {
         ((MainActivity) getActivity()).addAlbumFragment(album.getId(), album.getTitle());
@@ -168,6 +214,15 @@ public class MediaFragment extends Fragment implements MediasPresenter.View{
         adapter.setItems(medias.getAlbums());
         adapter.notifyDataSetChanged();
         rv_medias.smoothScrollToPosition(0);
+    }
+
+    @Override
+    public void createAlbumSuccess(AlbumId albumId) {
+        Log.e("a", "create Album Success: " + albumId.getAlbumId());
+        Album album = new Album();
+        album.setId(albumId.getAlbumId());
+        album.setTitle(albumName);
+        onMediaClick(album);
     }
 
     @Override

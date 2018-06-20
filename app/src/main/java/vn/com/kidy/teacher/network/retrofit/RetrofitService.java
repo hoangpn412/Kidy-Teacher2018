@@ -3,10 +3,16 @@ package vn.com.kidy.teacher.network.retrofit;
 import java.util.ArrayList;
 
 import io.reactivex.Observable;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import vn.com.kidy.teacher.data.Constants;
@@ -19,6 +25,9 @@ import vn.com.kidy.teacher.data.model.comment.CommentContent;
 import vn.com.kidy.teacher.data.model.comment.Comments;
 import vn.com.kidy.teacher.data.model.comment.Content;
 import vn.com.kidy.teacher.data.model.dayoff.DayOffList;
+import vn.com.kidy.teacher.data.model.media.AlbumContent;
+import vn.com.kidy.teacher.data.model.media.AlbumId;
+import vn.com.kidy.teacher.data.model.media.Photo;
 import vn.com.kidy.teacher.data.model.media.Photos;
 import vn.com.kidy.teacher.data.model.note.Notes;
 import vn.com.kidy.teacher.data.model.login.Account;
@@ -121,4 +130,18 @@ public interface RetrofitService {
 
     @POST(Constants.EndPoint.POSTCOMMENTS)
     Observable<Void> postComments(@Path(Constants.Params.CLASSID) String classId, @Body CommentContent commentContent);
+
+    @POST(Constants.EndPoint.CREATE_ALBUM)
+    Observable<AlbumId> createAlbum(@Path(Constants.Params.SCHOOLID) String schoolId, @Path(Constants.Params.CLASSID) String classId, @Body AlbumContent albumContent);
+
+    @Headers({"Domain-Name: douban"})
+    @Multipart
+    @POST(Constants.EndPoint.UPLOAD_IMAGE)
+    Observable<ArrayList<Photo>> uploadImage(@Path(Constants.Params.TOKEN) String token, @Part MultipartBody.Part image);
+
+    @Headers({"Domain-Name: douban"})
+    @Multipart
+    @POST(Constants.EndPoint.UPLOAD_IMAGE)
+    Observable<ArrayList<Photo>> uploadFile(@Path(Constants.Params.TOKEN) String token, @Part MultipartBody.Part file,
+                                    @Part("file") RequestBody name);
 }

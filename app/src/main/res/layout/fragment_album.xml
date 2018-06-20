@@ -9,17 +9,25 @@
     <include layout="@layout/header" />
 
     <android.support.v7.widget.RecyclerView
-        android:layout_marginTop="88dp"
         android:id="@+id/rv_album"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginTop="88dp">
 
     </android.support.v7.widget.RecyclerView>
 
     <ProgressBar
+        android:id="@+id/progress_loading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/progress_loading"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fb_add_images"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_margin="32dp"
+        android:src="@drawable/round_edt_addnote" />
 
 </android.support.design.widget.CoordinatorLayout>

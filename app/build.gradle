@@ -60,6 +60,10 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging:15.0.0'
     //
     implementation 'com.android.support:multidex:1.0.1'
+    // Image picker
+    implementation 'com.github.esafirm.android-image-picker:imagepicker:1.13.0'
+    // for experimental rx picker
+    implementation 'com.github.esafirm.android-image-picker:rximagepicker:1.13.0'
 }
 apply plugin: 'com.google.gms.google-services'
 

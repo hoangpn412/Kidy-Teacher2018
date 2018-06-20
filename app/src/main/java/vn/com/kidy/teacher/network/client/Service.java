@@ -4,6 +4,8 @@ package vn.com.kidy.teacher.network.client;
 import java.util.ArrayList;
 
 import io.reactivex.Observable;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import vn.com.kidy.teacher.data.model.calendar.Calendar;
 import vn.com.kidy.teacher.data.model.calendar.CalendarNotes;
 import vn.com.kidy.teacher.data.model.calendar.Events;
@@ -14,6 +16,9 @@ import vn.com.kidy.teacher.data.model.comment.Comments;
 import vn.com.kidy.teacher.data.model.comment.Content;
 import vn.com.kidy.teacher.data.model.dayoff.ChildrenOff;
 import vn.com.kidy.teacher.data.model.dayoff.DayOffList;
+import vn.com.kidy.teacher.data.model.media.AlbumContent;
+import vn.com.kidy.teacher.data.model.media.AlbumId;
+import vn.com.kidy.teacher.data.model.media.Photo;
 import vn.com.kidy.teacher.data.model.media.Photos;
 import vn.com.kidy.teacher.data.model.note.Notes;
 import vn.com.kidy.teacher.data.model.login.Account;
@@ -62,4 +67,7 @@ public interface Service {
     Observable<DayOffList> getDayOffList(String classId);
     Observable<ArrayList<Kid>> getChildreninClass(String classId, int week, int year);
     Observable<Void> postComments(String classId, CommentContent commentContent);
+    Observable<AlbumId> createAlbum(String schoolId, String classId, AlbumContent albumContent);
+    Observable<ArrayList<Photo>> uploadImage(String token, MultipartBody.Part part);
+    Observable<ArrayList<Photo>> uploadFile(String token, MultipartBody.Part file, RequestBody name);
 }

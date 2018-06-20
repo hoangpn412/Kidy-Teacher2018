@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -164,7 +165,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Log
         if (email.length() > 0 && token.length() > 0) {
             edt_email.setText(email);
             edt_password.setText("********");
-
+            ((MainActivity) getActivity()).setToken(token);
 
             if (!((MainActivity) getActivity()).getIsLogout()) {
                 progress_loading.setVisibility(View.VISIBLE);
@@ -257,6 +258,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Log
 //        doLoginSuccess(login);
         token = login.getToken();
 
+        ((MainActivity) getActivity()).setToken(token);
+
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("email", email);
         editor.putString("token", token);
@@ -264,6 +267,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Log
 
         getUserContact();
     }
+
+
 
     private void doLoginSuccess(Login login) {
 //        Toast.makeText(getContext(), getString(R.string.hello) + " " + parent.getTitle() + " " + parent.getName(), Toast.LENGTH_LONG).show();
@@ -332,6 +337,17 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Log
         adapter.setItems(classList);
         adapter.notifyDataSetChanged();
         ((MainActivity) getActivity()).setClasses(classList);
+
+        subscribeFirebaseTopic(classList);
+    }
+
+    private void subscribeFirebaseTopic(ArrayList<ClassInfo> classList) {
+        for (int i = 0; i < classList.size(); i++) {
+            FirebaseMessaging.getInstance().subscribeToTopic(classList.get(i).getSchoolId() + "_news");
+            FirebaseMessaging.getInstance().subscribeToTopic(classList.get(i).getId() + "_message");
+            FirebaseMessaging.getInstance().subscribeToTopic(classList.get(i).getId() + "_photos");
+            FirebaseMessaging.getInstance().subscribeToTopic(classList.get(i).getId() + "_dayoff");
+        }
     }
 
     @Override

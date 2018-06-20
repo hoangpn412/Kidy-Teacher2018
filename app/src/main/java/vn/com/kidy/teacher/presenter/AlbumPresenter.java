@@ -1,6 +1,13 @@
 package vn.com.kidy.teacher.presenter;
 
+import android.util.Log;
+
+import java.util.ArrayList;
+
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import vn.com.kidy.teacher.data.Constants;
+import vn.com.kidy.teacher.data.model.media.Photo;
 import vn.com.kidy.teacher.data.model.media.Photos;
 import vn.com.kidy.teacher.interactor.AlbumInteractor;
 
@@ -22,6 +29,27 @@ public class AlbumPresenter extends Presenter<AlbumPresenter.View> {
                 getView().getDataError(Constants.STATUS_CODE.SERVER_ERROR);
             } else {
                 getView().getDataSuccess(photos);
+            }
+        }, Throwable::printStackTrace);
+    }
+
+    public void onUploadImage(String token, MultipartBody.Part part) {
+        albumInteractor.uploadImage(token, part).subscribe((ArrayList<Photo> photos) -> {
+            if (photos == null) {
+                getView().getDataError(Constants.STATUS_CODE.SERVER_ERROR);
+            } else {
+//                getView().getDataSuccess(photos);
+                Log.e("a", "photos: " + photos.size());
+            }
+        }, Throwable::printStackTrace);
+    }
+
+    public void onUploadFile(String token, MultipartBody.Part file, RequestBody name) {
+        albumInteractor.uploadFile(token, file, name).subscribe((ArrayList<Photo> photos) -> {
+            if (photos == null) {
+                getView().getDataError(Constants.STATUS_CODE.SERVER_ERROR);
+            } else {
+                Log.e("a", "photos: " + photos.size());
             }
         }, Throwable::printStackTrace);
     }

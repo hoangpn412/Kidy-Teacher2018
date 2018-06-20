@@ -1,6 +1,10 @@
 package vn.com.kidy.teacher.presenter;
 
+import android.util.Log;
+
 import vn.com.kidy.teacher.data.Constants;
+import vn.com.kidy.teacher.data.model.media.AlbumContent;
+import vn.com.kidy.teacher.data.model.media.AlbumId;
 import vn.com.kidy.teacher.data.model.media.Medias;
 import vn.com.kidy.teacher.interactor.MediasInteractor;
 
@@ -29,9 +33,20 @@ public class MediasPresenter extends Presenter<MediasPresenter.View> {
         }, Throwable::printStackTrace);
     }
 
+    public void onCreateAlbum(String schoolId, String classId, AlbumContent albumContent) {
+        mediasInteractor.createAlbum(schoolId, classId, albumContent).subscribe(albumId -> {
+            Log.e("a", "create OK: " + albumId.getAlbumId());
+            if (albumId != null) {
+                getView().createAlbumSuccess(albumId);
+            } else {
+                getView().getDataError(Constants.STATUS_CODE.SERVER_ERROR);
+            }
+        }, Throwable::printStackTrace);
+    }
+
     public interface View extends Presenter.View {
         void getDataSuccess(Medias medias);
-
+        void createAlbumSuccess(AlbumId albumId);
         void getDataError(int statusCode);
     }
 }
