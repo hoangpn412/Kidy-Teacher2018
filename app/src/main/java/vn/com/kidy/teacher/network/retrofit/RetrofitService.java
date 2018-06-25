@@ -27,7 +27,9 @@ import vn.com.kidy.teacher.data.model.comment.Content;
 import vn.com.kidy.teacher.data.model.dayoff.DayOffList;
 import vn.com.kidy.teacher.data.model.media.AlbumContent;
 import vn.com.kidy.teacher.data.model.media.AlbumId;
+import vn.com.kidy.teacher.data.model.media.CreateImageRespone;
 import vn.com.kidy.teacher.data.model.media.Photo;
+import vn.com.kidy.teacher.data.model.media.PhotoContent;
 import vn.com.kidy.teacher.data.model.media.Photos;
 import vn.com.kidy.teacher.data.model.note.Notes;
 import vn.com.kidy.teacher.data.model.login.Account;
@@ -142,6 +144,9 @@ public interface RetrofitService {
     @Headers({"Domain-Name: douban"})
     @Multipart
     @POST(Constants.EndPoint.UPLOAD_IMAGE)
-    Observable<ArrayList<Photo>> uploadFile(@Path(Constants.Params.TOKEN) String token, @Part MultipartBody.Part file,
+    Observable<ArrayList<String>> uploadFile(@Path(Constants.Params.TOKEN) String token, @Part MultipartBody.Part file,
                                     @Part("file") RequestBody name);
+
+    @POST(Constants.EndPoint.CREATE_IMAGE)
+    Observable<CreateImageRespone> createImage(@Path(Constants.Params.SCHOOLID) String schoolId, @Path(Constants.Params.CLASSID) String classId, @Path(Constants.Params.ALBUMID) String albumId, @Body PhotoContent photoContent);
 }

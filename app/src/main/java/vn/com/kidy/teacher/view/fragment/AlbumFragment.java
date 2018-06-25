@@ -1,16 +1,15 @@
 package vn.com.kidy.teacher.view.fragment;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,21 +18,22 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.esafirm.imagepicker.features.ImagePicker;
 import com.esafirm.imagepicker.model.Image;
-import com.google.gson.Gson;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -42,15 +42,12 @@ import me.jessyan.retrofiturlmanager.RetrofitUrlManager;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 import vn.com.kidy.teacher.R;
 import vn.com.kidy.teacher.data.Constants;
 import vn.com.kidy.teacher.data.model.login.ClassInfo;
+import vn.com.kidy.teacher.data.model.media.AlbumContent;
+import vn.com.kidy.teacher.data.model.media.Photo;
+import vn.com.kidy.teacher.data.model.media.PhotoContent;
 import vn.com.kidy.teacher.data.model.media.Photos;
 import vn.com.kidy.teacher.interactor.AlbumInteractor;
 import vn.com.kidy.teacher.network.client.Client;
@@ -101,6 +98,10 @@ public class AlbumFragment extends Fragment implements AlbumPresenter.View {
 
     private int classPos;
     private ClassInfo cls;
+
+    private int imageUpload = 0;
+    private int imageUploaded = 0;
+    private ArrayList<String> imagesUpload = new ArrayList<>();
 
     public AlbumFragment() {
         // Required empty public constructor
@@ -231,6 +232,42 @@ public class AlbumFragment extends Fragment implements AlbumPresenter.View {
     }
 
     @Override
+    public void uploadSuccess(ArrayList<String> photos) {
+        imageUploaded += photos.size();
+        Log.e("a", "ImageUploaded: " + imageUploaded + "/" + imageUpload);
+        imagesUpload.addAll(photos);
+
+        try {
+            txt_uploading.setText("Uploading: " + imageUploaded + "/" + imageUpload);
+            if (imageUploaded == imageUpload) {
+                alertDialogAndroid.dismiss();
+                Log.e("a", imagesUpload.size() + "....");
+                PhotoContent photoContent = new PhotoContent(imagesUpload);
+                albumPresenter.onCreateImage(cls.getSchoolId(), cls.getId(), albumId, photoContent);
+            }
+        } catch (Exception ex) {
+
+        }
+    }
+
+    @Override
+    public void createImageSuccess() {
+        Log.e("a", "Create Image Success");
+        ArrayList<Photo> photos = this.photos.getPhotos();
+        Photo photo;
+        for (int i = 0; i < imagesUpload.size(); i++) {
+            photo = new Photo();
+            photo.setId(i);
+            photo.setName("" + i);
+            photo.setPath(imagesUpload.get(i));
+            photos.add(photo);
+            Log.e("a", "Photo path: " + i + " " + photo.getPath());
+        }
+        adapter.setItems(photos);
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
     public Context context() {
         return null;
     }
@@ -255,15 +292,24 @@ public class AlbumFragment extends Fragment implements AlbumPresenter.View {
         List<Image> images = ImagePicker.getImages(data);
         if (images != null && !images.isEmpty()) {
             Log.e("a", "images: " + images.size() + " " + images.get(0).getPath());
+            imageUpload = images.size();
+            imageUploaded = 0;
 
-            String filepath = images.get(0).getPath();
-            File imagefile = new File(filepath);
-            FileInputStream fis = null;
-            try {
-                fis = new FileInputStream(imagefile);
-                uploadImage(getBytes(fis));
-            } catch (Exception e) {
-                e.printStackTrace();
+            imagesUpload.clear();
+            showDialogUploadImage();
+
+            for (int i = 0; i < images.size(); i++) {
+                String filepath = images.get(i).getPath();
+                File imagefile = new File(filepath);
+                String fileName = imagefile.getName();
+                Log.e("a", fileName + "...");
+                FileInputStream fis = null;
+                try {
+                    fis = new FileInputStream(imagefile);
+                    uploadImage(getBytes(fis), fileName);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
         }
@@ -284,9 +330,9 @@ public class AlbumFragment extends Fragment implements AlbumPresenter.View {
         return byteBuff.toByteArray();
     }
 
-    private void uploadImage(byte[] imageBytes) {
+    private void uploadImage(byte[] imageBytes, String fileName) {
 
-        Log.e("a" , "uploadImage: " + imageBytes.length);
+        Log.e("a", "uploadImage: " + imageBytes.length);
 
         RequestBody requestFile = RequestBody.create(MediaType.parse("*/*"), imageBytes);
 
@@ -296,14 +342,37 @@ public class AlbumFragment extends Fragment implements AlbumPresenter.View {
             e.printStackTrace();
         }
 
-        MultipartBody.Part body = MultipartBody.Part.createFormData("image", "image.png", requestFile);
+        MultipartBody.Part body = MultipartBody.Part.createFormData("files", fileName, requestFile);
 
-        MultipartBody.Part fileToUpload = MultipartBody.Part.createFormData("file1", "image1", requestFile);
-        RequestBody filename = RequestBody.create(MediaType.parse("text/plain"), "image1");
+//        MultipartBody.Part fileToUpload = MultipartBody.Part.createFormData("file1", "image1", requestFile);
+//        RequestBody filename = RequestBody.create(MediaType.parse("text/plain"), "image1");
 
 
         RetrofitUrlManager.getInstance().putDomain("douban", Constants.API_UPLOAD_URL);
         albumPresenter.onUploadFile(((MainActivity) getActivity()).getToken(), body, requestFile);
     }
 
+    private AlertDialog alertDialogAndroid;
+    private TextView txt_uploading;
+
+    private void showDialogUploadImage() {
+        LayoutInflater layoutInflaterAndroid = LayoutInflater.from(getContext());
+        View mView = layoutInflaterAndroid.inflate(R.layout.dialog_upload, null);
+        AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(getContext());
+        alertDialogBuilderUserInput.setView(mView);
+
+        final ProgressBar progress_loading = mView.findViewById(R.id.progress_uploading);
+        txt_uploading = mView.findViewById(R.id.txt_uploading);
+        txt_uploading.setText("Uploading: " + imageUploaded + "/" + imageUpload);
+
+        alertDialogBuilderUserInput
+                .setCancelable(false)
+                .setNegativeButton("Huỷ", (dialogBox, id) -> {
+                    // ToDo get user input here
+
+                });
+
+        alertDialogAndroid = alertDialogBuilderUserInput.setCancelable(false).setTitle("Upload Image").create();
+        alertDialogAndroid.show();
+    }
 }

@@ -44,7 +44,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ItemsViewHol
     public void onBindViewHolder(ItemsViewHolder holder, int position) {
         Photo item = items.get(position);
 
-        Uri uri = Uri.parse(Constants.IMAGE_BASE_URL + item.getPath());
+        Uri uri = Uri.parse(Constants.IMAGE_BASE_URL + item.getPath().replaceAll("\\\\", "/"));
         holder.image.setImageURI(uri);
 
         holder.itemView.setOnClickListener((View view) -> {

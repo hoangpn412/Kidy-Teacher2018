@@ -26,8 +26,10 @@ import vn.com.kidy.teacher.data.model.login.Login;
 import vn.com.kidy.teacher.data.model.login.User;
 import vn.com.kidy.teacher.data.model.media.AlbumContent;
 import vn.com.kidy.teacher.data.model.media.AlbumId;
+import vn.com.kidy.teacher.data.model.media.CreateImageRespone;
 import vn.com.kidy.teacher.data.model.media.Medias;
 import vn.com.kidy.teacher.data.model.media.Photo;
+import vn.com.kidy.teacher.data.model.media.PhotoContent;
 import vn.com.kidy.teacher.data.model.media.Photos;
 import vn.com.kidy.teacher.data.model.news.News;
 import vn.com.kidy.teacher.data.model.note.DayOffContent;
@@ -220,8 +222,13 @@ public class Client extends RetrofitClient implements Service {
     }
 
     @Override
-    public Observable<ArrayList<Photo>> uploadFile(String token, MultipartBody.Part file, RequestBody name) {
+    public Observable<ArrayList<String>> uploadFile(String token, MultipartBody.Part file, RequestBody name) {
         return getRetrofitService().uploadFile(token, file, name).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<CreateImageRespone> createImage(String schoolId, String classId, String albumId, PhotoContent photoContent) {
+        return getRetrofitService().createImage(schoolId, classId, albumId, photoContent).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
 }

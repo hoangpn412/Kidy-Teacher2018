@@ -6,7 +6,9 @@ import io.reactivex.Observable;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.http.Multipart;
+import vn.com.kidy.teacher.data.model.media.CreateImageRespone;
 import vn.com.kidy.teacher.data.model.media.Photo;
+import vn.com.kidy.teacher.data.model.media.PhotoContent;
 import vn.com.kidy.teacher.data.model.media.Photos;
 import vn.com.kidy.teacher.network.client.Service;
 
@@ -29,7 +31,11 @@ public class AlbumInteractor {
         return service.uploadImage(token, part);
     }
 
-    public Observable<ArrayList<Photo>> uploadFile(String token, MultipartBody.Part file, RequestBody name) {
+    public Observable<ArrayList<String>> uploadFile(String token, MultipartBody.Part file, RequestBody name) {
         return service.uploadFile(token, file, name);
+    }
+
+    public Observable<CreateImageRespone> createImage(String schoolId, String classId, String albumId, PhotoContent photoContent) {
+        return service.createImage(schoolId, classId, albumId, photoContent);
     }
 }

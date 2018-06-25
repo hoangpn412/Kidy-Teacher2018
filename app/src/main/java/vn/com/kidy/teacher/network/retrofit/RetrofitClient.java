@@ -1,5 +1,7 @@
 package vn.com.kidy.teacher.network.retrofit;
 
+import java.util.concurrent.TimeUnit;
+
 import me.jessyan.retrofiturlmanager.RetrofitUrlManager;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -31,13 +33,14 @@ public class RetrofitClient {
 
     private Retrofit retrofitBuilder(String baseUrl) {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        interceptor.setLevel(HttpLoggingInterceptor.Level.HEADERS);
 
 //        OkHttpClient client = new OkHttpClient.Builder()
 //                .addInterceptor(interceptor).build();
 
         OkHttpClient client = RetrofitUrlManager.getInstance().with(new OkHttpClient.Builder())
                 .addInterceptor(interceptor)
+                .readTimeout(100, TimeUnit.SECONDS)
                 .build();
 
 

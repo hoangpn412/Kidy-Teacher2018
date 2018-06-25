@@ -180,8 +180,8 @@ public class CalendarFragment extends Fragment implements CalendarPresenter.View
     private void getData() {
 //        calendarPresenter.onGetHomeNotes(cls.getId(), cls.getBabyId(), year, month, day);
         calendarPresenter.onGetClassNotes(cls.getId(), year, month, day);
-        calendarPresenter.onGetTimeTables(cls.getId(), day);
-        calendarPresenter.onGetMeanMenu(cls.getId(), day);
+        calendarPresenter.onGetTimeTables(cls.getId(), dayofWeek);
+        calendarPresenter.onGetMeanMenu(cls.getId(), dayofWeek);
     }
 
     private void refreshData() {

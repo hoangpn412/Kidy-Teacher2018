@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import io.reactivex.Observable;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import retrofit2.http.Body;
 import vn.com.kidy.teacher.data.model.calendar.Calendar;
 import vn.com.kidy.teacher.data.model.calendar.CalendarNotes;
 import vn.com.kidy.teacher.data.model.calendar.Events;
@@ -18,7 +19,9 @@ import vn.com.kidy.teacher.data.model.dayoff.ChildrenOff;
 import vn.com.kidy.teacher.data.model.dayoff.DayOffList;
 import vn.com.kidy.teacher.data.model.media.AlbumContent;
 import vn.com.kidy.teacher.data.model.media.AlbumId;
+import vn.com.kidy.teacher.data.model.media.CreateImageRespone;
 import vn.com.kidy.teacher.data.model.media.Photo;
+import vn.com.kidy.teacher.data.model.media.PhotoContent;
 import vn.com.kidy.teacher.data.model.media.Photos;
 import vn.com.kidy.teacher.data.model.note.Notes;
 import vn.com.kidy.teacher.data.model.login.Account;
@@ -69,5 +72,6 @@ public interface Service {
     Observable<Void> postComments(String classId, CommentContent commentContent);
     Observable<AlbumId> createAlbum(String schoolId, String classId, AlbumContent albumContent);
     Observable<ArrayList<Photo>> uploadImage(String token, MultipartBody.Part part);
-    Observable<ArrayList<Photo>> uploadFile(String token, MultipartBody.Part file, RequestBody name);
+    Observable<ArrayList<String>> uploadFile(String token, MultipartBody.Part file, RequestBody name);
+    Observable<CreateImageRespone> createImage(String schoolId, String classId, String albumId, PhotoContent photoContent);
 }
